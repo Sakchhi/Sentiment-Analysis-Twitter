@@ -2,6 +2,7 @@ import json
 import re
 
 import pandas as pd
+from nltk.corpus import stopwords
 
 with open('contraction_map.json') as f:
     contraction_map = json.load(f)
@@ -33,12 +34,14 @@ def expand_contractions(text, contraction_mapping=contraction_map):
     return expanded_text
 
 
-def cleaning_hashtage(text):
-    re.sub('#')
-
-
-def text_cleaning(text):
-    pass
+def cleaning_text(text, html_pattern):
+    text = remove_pattern(text, html_pattern)
+    text = remove_pattern(text, '#')
+    text = expand_contractions(text)
+    text = re.sub(r'[^a-zA-Z ]+', '', text)
+    text = text.lower()
+    text = ' '.join([w for w in text.split() if w not in stop_words])
+    return text
 
 
 if __name__ == '__main__':
@@ -46,12 +49,19 @@ if __name__ == '__main__':
     # print(df_train.label.value_counts())
 
     html_pattern = r'https*://[a-zA-z_.0-9/]+/* *'
-    df_train['cleaned_tweet'] = df_train.tweet.apply(lambda r: remove_pattern(r, html_pattern))
+    stop_words = set(stopwords.words('english'))
+
+    df_train['cleaned_tweet'] = df_train.tweet.apply(lambda r: cleaning_text(r, html_pattern))
+    """df_train.tweet.apply(lambda r: remove_pattern(r, html_pattern))
     df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: remove_pattern(r, '#'))
     df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: expand_contractions(r))
-    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: remove_pattern(r, r"\W+"))
+    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: re.sub(r'[^a-zA-Z ]+', '', r))
+    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: r.lower())
+    df_train['cleaned_tweet'] = df_train.apply(lambda r: ' '.join([w for w in r[-1].split() if w not in stop_words]), axis=1)
+    """
     # TODO split words in hashtags
     # TODO parse emoticons
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
-    for i in range(5):
-        print(df_train.iloc[i].cleaned_tweet, end='\n\n')
+    # for i in range(10):
+    #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
+    df_train.to_excel("Data/train_cleaned.xlsx", index=False)
