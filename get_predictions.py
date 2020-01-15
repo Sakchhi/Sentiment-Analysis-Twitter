@@ -1,29 +1,33 @@
 import pickle
 
 import pandas as pd
-from nltk.corpus import stopwords
 
 from text_preprocessing import cleaning_text
 
 if __name__ == '__main__':
     df_test = pd.read_csv('Data/test/test.csv')
-    html_pattern = r'https*://[a-zA-z_.0-9/]+/* *'
-    stop_words = set(stopwords.words('english'))
+    html_regex = r'https*://[a-zA-z_.0-9/]+/* *'
+    # stop_words = set(stopwords.words('english'))
 
-    df_test['cleaned_tweet'] = df_test.tweet.apply(lambda r: cleaning_text(r, html_pattern, stop_words))
-    df_test.to_csv('Data/test/test_cleaned_v0.xlsx', index=False)
+    with open('stop_words.txt', 'rb') as f:
+        stop_words = []
+        for line in f:
+            stop_words.append(line.decode("utf-8").strip())
 
-    count_vec_model = pickle.load(open('models/bag_of_words_v0.pickle', 'rb'))
-    # df_test = pd.read_excel('Data/test/test_cleaned_v0.xlsx')
+    df_test['cleaned_tweet'] = df_test.tweet.apply(lambda r: cleaning_text(r, html_regex, stop_words))
+    df_test.to_excel('Data/test/test_cleaned_v0.1.xlsx', index=False)
+
+    count_vec_model = pickle.load(open('models/bag_of_words_v0.1.pickle', 'rb'))
+    # df_test = pd.read_excel('Data/test/test_cleaned_v0.1.xlsx')
     bag_of_words_test = count_vec_model.transform(df_test.cleaned_tweet)
 
     test_bow = pd.DataFrame(bag_of_words_test.toarray(), columns=count_vec_model.get_feature_names())
     # print(test_bow.head())
 
-    test_bow.to_csv('Data/test/bag_of_words_v0.csv')
-    mnb_model = pickle.load(open('models/20200115_mnb_bow_v0.pickle', 'rb'))
+    test_bow.to_csv('Data/test/bag_of_words_v0.1.csv')
+    mnb_model = pickle.load(open('models/20200115_mnb_bow_v0.1.pickle', 'rb'))
 
     y_pred = mnb_model.predict(test_bow)
 
     df_pred = pd.DataFrame(y_pred, index=df_test.id, columns=['label'])
-    df_pred.to_csv('outputs/20200115_mnb_bow_v0.csv')
+    df_pred.to_csv('outputs/20200115_mnb_bow_v0.1.csv')

@@ -13,11 +13,11 @@ def get_bow(data):
 
 
 if __name__ == '__main__':
-    df_raw = pd.read_excel("Data/train_cleaned_v0.xlsx")
+    df_raw = pd.read_excel("Data/train/train_cleaned_v0.1.xlsx")
     print(df_raw.columns)
 
     count_vec_model, df_bow = get_bow(df_raw.cleaned_tweet.tolist())
     print(df_bow.head())
-    pickle.dump(count_vec_model, open("models/bag_of_words_v0.pickle", 'wb'))
+    pickle.dump(count_vec_model, open("models/bag_of_words_v0.1.pickle", 'wb'))
     # TODO JOBLIB vs PICKLE
-    df_bow.to_csv('Data/bag_of_words_v0.csv', index=False)
+    df_bow.to_csv('Data/train/bag_of_words_v0.1.csv', index=False)

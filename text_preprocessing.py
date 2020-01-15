@@ -2,10 +2,14 @@ import json
 import re
 
 import pandas as pd
-from nltk.corpus import stopwords
 
 with open('contraction_map.json') as f:
     contraction_map = json.load(f)
+
+with open('stop_words.txt', 'rb') as f:
+    stop_words = []
+    for line in f:
+        stop_words.append(line.decode("utf-8").strip())
 
 
 def remove_pattern(input_text, pattern):
@@ -34,7 +38,7 @@ def expand_contractions(text, contraction_mapping=contraction_map):
     return expanded_text
 
 
-def cleaning_text(text, html_pattern, stopwords_list):
+def cleaning_text(text, html_pattern, stopwords_list=stop_words):
     text = remove_pattern(text, html_pattern)
     text = remove_pattern(text, '#')
     text = expand_contractions(text)
@@ -49,14 +53,13 @@ if __name__ == '__main__':
     # df_test = pd.read_csv('Data/test.csv')
     print(df_train.label.value_counts())
 
-    html_pattern = r'https*://[a-zA-z_.0-9/]+/* *'
-    stop_words = set(stopwords.words('english'))
+    html_regex = r'https*://[a-zA-z_.0-9/]+/* *'
+    # stop_words = set(stopwords.words('english'))
 
-    df_train['cleaned_tweet'] = df_train.tweet.apply(lambda r: cleaning_text(r, html_pattern, stop_words))
-    print()
+    df_train['cleaned_tweet'] = df_train.tweet.apply(lambda r: cleaning_text(r, html_regex))
     # TODO split words in hashtags
     # TODO parse emoticons
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_train.to_excel("Data/train/train_cleaned_v0.xlsx", index=False)
+    df_train.to_excel("Data/train/train_cleaned_v0.1.xlsx", index=False)
