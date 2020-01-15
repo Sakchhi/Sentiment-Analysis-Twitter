@@ -11,12 +11,12 @@ def get_predictions(train_data, train_labels, test_data):
     mnb_model.fit(train_data, train_labels)
     predictions = mnb_model.predict(test_data)
 
-    pickle.dump(mnb_model, open('models/20200115_mnb_bow_v0.1.pickle', 'wb'))
+    pickle.dump(mnb_model, open('models/20200115_mnb_bow_v0.1.1.pickle', 'wb'))
     return predictions
 
 
 if __name__ == '__main__':
-    df_bow = pd.read_csv('Data/train/bag_of_words_v0.1.csv')
+    df_bow = pd.read_csv('Data/train/bag_of_words_v0.1.1.csv')
     df_train = pd.read_csv('Data/train/train.csv')
     X_train, X_val, y_train, y_val = train_test_split(df_bow, df_train.label, test_size=0.2)
 
