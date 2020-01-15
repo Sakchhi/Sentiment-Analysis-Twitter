@@ -12,6 +12,9 @@ with open('stop_words.txt', 'rb') as f:
         stop_words.append(line.decode("utf-8").strip())
 
 
+# tweet = ''.join(''.join(s)[:2] for _, s in itertools.groupby(tweet))
+
+
 def remove_pattern(input_text, pattern):
     r = re.findall(pattern, input_text)
     for i in r:
@@ -38,8 +41,9 @@ def expand_contractions(text, contraction_mapping=contraction_map):
     return expanded_text
 
 
-def cleaning_text(text, html_pattern, stopwords_list=stop_words):
-    text = remove_pattern(text, html_pattern)
+def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
+    text = remove_pattern(text, pattern_dict["html_regex"])
+    text = remove_pattern(text, pattern_dict["user_name_regex"])
     text = remove_pattern(text, '#')
     text = expand_contractions(text)
     text = re.sub(r'[^a-zA-Z ]+', '', text)
@@ -56,13 +60,16 @@ if __name__ == '__main__':
     print(df_full.tail())
     print(df_train.label.value_counts())
 
-    html_regex = r'https*://[a-zA-z_.0-9/]+/* *'
+    regex_list = {
+        "html_regex": r'https*://[a-zA-z_.0-9/]+/* *',
+        "user_name_regex": r'@[A-Za-z0-9_]+'
+    }
     # stop_words = set(stopwords.words('english'))
 
-    df_full['cleaned_tweet'] = df_full.tweet.apply(lambda r: cleaning_text(r, html_regex))
+    df_full['cleaned_tweet'] = df_full.tweet.apply(lambda r: cleaning_text(r, regex_list))
     # TODO split words in hashtags
     # TODO parse emoticons
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_full.to_excel("Data/train/full_cleaned_v0.1.xlsx", index=False)
+    df_full.to_excel("Data/train/full_cleaned_v0.2.xlsx", index=False)
