@@ -43,19 +43,20 @@ def cleaning_text(text, html_pattern, stopwords_list):
     text = ' '.join([w for w in text.split() if w not in stopwords_list])
     return text
 
-    # if __name__ == '__main__':
-    df_train = pd.read_csv('Data/train.csv')
+
+if __name__ == '__main__':
+    df_train = pd.read_csv('Data/train/train.csv')
     # df_test = pd.read_csv('Data/test.csv')
     print(df_train.label.value_counts())
 
     html_pattern = r'https*://[a-zA-z_.0-9/]+/* *'
     stop_words = set(stopwords.words('english'))
 
-    df_test['cleaned_tweet'] = df_test.tweet.apply(lambda r: cleaning_text(r, html_pattern, stop_words))
-
+    df_train['cleaned_tweet'] = df_train.tweet.apply(lambda r: cleaning_text(r, html_pattern, stop_words))
+    print()
     # TODO split words in hashtags
     # TODO parse emoticons
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_test.to_excel("Data/train_cleaned_v0.xlsx", index=False)
+    df_train.to_excel("Data/train/train_cleaned_v0.xlsx", index=False)
