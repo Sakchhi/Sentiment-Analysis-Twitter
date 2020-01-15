@@ -45,23 +45,18 @@ def cleaning_text(text, html_pattern):
 
 
 if __name__ == '__main__':
-    df_train = pd.read_csv('Data/train.csv')
+    # df_train = pd.read_csv('Data/train.csv')
+    df_test = pd.read_csv('Data/test.csv')
     # print(df_train.label.value_counts())
 
     html_pattern = r'https*://[a-zA-z_.0-9/]+/* *'
     stop_words = set(stopwords.words('english'))
 
-    df_train['cleaned_tweet'] = df_train.tweet.apply(lambda r: cleaning_text(r, html_pattern))
-    """df_train.tweet.apply(lambda r: remove_pattern(r, html_pattern))
-    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: remove_pattern(r, '#'))
-    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: expand_contractions(r))
-    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: re.sub(r'[^a-zA-Z ]+', '', r))
-    df_train['cleaned_tweet'] = df_train.cleaned_tweet.apply(lambda r: r.lower())
-    df_train['cleaned_tweet'] = df_train.apply(lambda r: ' '.join([w for w in r[-1].split() if w not in stop_words]), axis=1)
-    """
+    df_test['cleaned_tweet'] = df_test.tweet.apply(lambda r: cleaning_text(r, html_pattern))
+
     # TODO split words in hashtags
     # TODO parse emoticons
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_train.to_excel("Data/train_cleaned.xlsx", index=False)
+    df_test.to_excel("Data/test_cleaned.xlsx", index=False)

@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
@@ -12,7 +14,12 @@ if __name__ == '__main__':
     mnb_model.fit(X_train, y_train)
     y_pred = mnb_model.predict(X_val)
 
+    pickle.dump(mnb_model, open('models/20200115_mnb_bow_V1.pickle', 'wb'))
+
     accuracy_score = metrics.accuracy_score(y_val, y_pred)
     print(accuracy_score)
 
-    print(metrics.confusion_matrix(y_val, y_pred))
+    cm = metrics.confusion_matrix(y_val, y_pred)
+    tp, fn, fp, tn = cm[0][0], cm[0][1], cm[1][0], cm[1][1]
+    print("FPR = {}".format(fp / (fp + tn)))
+    print("TPR = {}".format(tp / (tp + fn)))
