@@ -1,22 +1,18 @@
 import pandas as pd
-from sklearn.externals import joblib
-from sklearn.feature_extraction.text import CountVectorizer
-
-
-def get_bow(data):
-    count = CountVectorizer()
-    count.fit(data)
-    bag_of_words = count.transform(data)
-    bow_df = pd.DataFrame(bag_of_words.toarray(), columns=count.get_feature_names())
-    return count, bow_df
-
+from sklearn import metrics
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
 
 if __name__ == '__main__':
-    df_raw = pd.read_excel("Data/train_cleaned.xlsx")
-    print(df_raw.columns)
+    df_bow = pd.read_csv('Data/bag_of_words_v1.csv')
+    df_train = pd.read_csv('Data/train.csv')
+    X_train, X_val, y_train, y_val = train_test_split(df_bow, df_train.label, test_size=0.2)
 
-    count_vec_model, df_bow = get_bow(df_raw.cleaned_tweet.tolist())
-    print(df_bow.head())
-    joblib.dump(count_vec_model, "models/bag_of_words_v1.joblib")
-    # TODO JOBLIB vs PICKLE
-    df_bow.to_csv('Data/bag_of_words_v1.csv', index=False)
+    mnb_model = MultinomialNB()
+    mnb_model.fit(X_train, y_train)
+    y_pred = mnb_model.predict(X_val)
+
+    accuracy_score = metrics.accuracy_score(y_val, y_pred)
+    print(accuracy_score)
+
+    print(metrics.confusion_matrix(y_val, y_pred))
