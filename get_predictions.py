@@ -23,10 +23,10 @@ if __name__ == '__main__':
     # print(test_bow.head())
     #
     # test_bow.to_csv('Data/test/bag_of_words_v0.1.csv')
-    mnb_model = pickle.load(open('models/20200115_mnb_bow_v0.3.pickle', 'rb'))
+    mnb_model = pickle.load(open('models/20200115_mnb_bow_v0.4.pickle', 'rb'))
 
-    test_bow = pd.read_csv('Data/test/bag_of_words_v0.3.csv')
+    test_bow = pd.read_csv('Data/test/bag_of_words_v0.4.csv')
     y_pred = mnb_model.predict(test_bow)
 
     df_pred = pd.DataFrame(y_pred, index=df_test.id, columns=['label'])
-    df_pred.to_csv('outputs/20200115_mnb_bow_v0.3.csv')
+    df_pred.to_csv('outputs/20200115_mnb_bow_v0.4.csv')

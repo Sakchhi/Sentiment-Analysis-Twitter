@@ -1,3 +1,4 @@
+import itertools
 import json
 import re
 
@@ -12,9 +13,6 @@ with open('stop_words.txt', 'rb') as f:
     stop_words = []
     for line in f:
         stop_words.append(line.decode("utf-8").strip())
-
-
-# tweet = ''.join(''.join(s)[:2] for _, s in itertools.groupby(tweet))
 
 
 def remove_pattern(input_text, pattern):
@@ -48,6 +46,7 @@ def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
     text = remove_pattern(text, pattern_dict["user_name_regex"])
     text = remove_pattern(text, '#')
     text = translator(text)
+    text = ''.join(''.join(s)[:2] for _, s in itertools.groupby(text))
     text = expand_contractions(text)
     text = re.sub(r'[^a-zA-Z ]+', '', text)
     text = text.lower()
@@ -75,4 +74,4 @@ if __name__ == '__main__':
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_full.to_excel("Data/train/full_cleaned_v0.3.xlsx", index=False)
+    df_full.to_excel("Data/train/full_cleaned_v0.4.xlsx", index=False)

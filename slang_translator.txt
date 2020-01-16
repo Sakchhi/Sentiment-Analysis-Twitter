@@ -6,6 +6,7 @@ ATM=At The Moment
 A3=Anytime Anywhere Anyplace
 BAK=Back At Keyboard
 BBL=Be Back Later
+BDAY=Birthday
 BBS=Be Back Soon
 BFN=Bye For Now
 B4N=Bye For Now
