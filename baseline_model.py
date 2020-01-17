@@ -23,16 +23,18 @@ if __name__ == '__main__':
 
     df_data = df_bow.copy()
     df_data['sent_label'] = df_train.iloc[:, 1].values
-    print(df_data.shape, df_data.columns[-5:])
+    print(df_data.shape)
+    print(df_data.sent_label.value_counts())
 
-    negative_label_indices = df_data[df_data.label == 0].index
-    sample_size = sum(df_data.label == 1)
+    negative_label_indices = df_data[df_data.sent_label == 0].index
+    sample_size = sum(df_data.sent_label == 1)
     random_indices = np.random.choice(negative_label_indices, sample_size, replace=False)
-    postive_label_indices = df_data[df_data.label == 1].index
+    postive_label_indices = df_data[df_data.sent_label == 1].index
 
     under_sampled_indices = np.concatenate([postive_label_indices, random_indices])
     df_under_sample = df_data.loc[under_sampled_indices]
-    # print(len(negative_label_indices), sample_size, len(df_under_sample), len(under_sampled_indices))
+    print(df_under_sample.sent_label.value_counts())
+    print(len(negative_label_indices), sample_size, len(df_under_sample), len(under_sampled_indices))
 
     y_pred = get_predictions(df_under_sample.iloc[:, :-1], df_under_sample.sent_label, df_bow)
     print(len(y_pred), len(df_train.label))
