@@ -1,9 +1,12 @@
-import datetime
+import os
 import pickle
 
 import pandas as pd
 from sklearn import metrics
 from sklearn.naive_bayes import MultinomialNB
+
+import config
+import run_config
 
 
 def get_predictions(train_data, train_labels, test_data):
@@ -11,15 +14,16 @@ def get_predictions(train_data, train_labels, test_data):
     mnb_model.fit(train_data, train_labels)
     predictions = mnb_model.predict(test_data)
 
-    pickle_file_name = 'models/classifier_model/{}_mnb_bow_v0.5.pickle'.format(
-        datetime.datetime.today().strftime('%Y%m%d'))
+    pickle_file_name = os.path.join(config.MODEL_DIR, 'classifier_model/{}_mnb_bow_v{}.pickle'.format(
+        run_config.model_date_to_read, run_config.model_version_to_read))
     pickle.dump(mnb_model, open(pickle_file_name, 'wb'))
     return predictions
 
 
 if __name__ == '__main__':
-    df_bow = pd.read_csv('Data/processed/train/feature_eng/bag_of_words_v0.5.csv')
-    df_train = pd.read_csv('Data/raw/train.csv')
+    df_bow = pd.read_csv(os.path.join(config.DATA_DIR, 'processed/train/feature_eng/{}_bag_of_words_v{}.csv'.format(
+        run_config.model_date_to_read, run_config.model_version_to_read)))
+    df_train = pd.read_csv(os.path.join(config.DATA_DIR, 'raw/train.csv'))
     # X_train, X_val, y_train, y_val = train_test_split(df_bow, df_train.label, test_size=0.2)
     print(df_bow.shape, df_train.shape)
 

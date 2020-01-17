@@ -3,7 +3,10 @@
 """
 
 import csv
+import os
 import re
+
+import config
 
 
 def translator(text):
@@ -11,7 +14,7 @@ def translator(text):
     j = 0
     for _str in text:
         # File path which consists of Abbreviations.
-        file_name = "slang_translator.txt"
+        file_name = os.path.join(config.UTILITIES_DIR, "slang_translator.txt")
 
         # File Access mode [Read Mode]
         access_mode = "r"

@@ -1,15 +1,18 @@
 import itertools
 import json
+import os
 import re
 
 import pandas as pd
-
 from expand_sms_slang import translator
 
-with open('contraction_map.json') as f:
+import config
+import run_config
+
+with open(os.path.join(config.UTILITIES_DIR, 'contraction_map.json')) as f:
     contraction_map = json.load(f)
 
-with open('stop_words.txt', 'rb') as f:
+with open(os.path.join(config.UTILITIES_DIR, 'stop_words.txt'), 'rb') as f:
     stop_words = []
     for line in f:
         stop_words.append(line.decode("utf-8").strip())
@@ -62,10 +65,10 @@ def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
 
 
 if __name__ == '__main__':
-    df_train = pd.read_csv('Data/raw/train.csv')
-    df_test = pd.read_csv('Data/raw/test.csv')
+    df_train = pd.read_csv(os.path.join(config.DATA_DIR, 'raw/train.csv'))
+    df_test = pd.read_csv(os.path.join(config.DATA_DIR, 'raw/test.csv'))
     df_full = df_train.append(df_test, ignore_index=True)
-    print(df_full.columns, df_full.shape)
+    print(df_full.shape)
     print(df_full.tail())
     print(df_train.label.value_counts())
 
@@ -82,4 +85,5 @@ if __name__ == '__main__':
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_full.to_excel("Data/processed/train/preprocess/full_cleaned_v0.5.xlsx", index=False)
+    df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
+        run_config.model_date_to_write, run_config.model_version_to_write)), index=False)

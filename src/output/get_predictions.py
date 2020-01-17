@@ -1,10 +1,13 @@
-import datetime
+import os
 import pickle
 
 import pandas as pd
 
+import config
+import run_config
+
 if __name__ == '__main__':
-    df_test = pd.read_csv('Data/raw/test.csv')
+    df_test = pd.read_csv(os.path.join(config.DATA_DIR, 'raw/test.csv'))
     # html_regex = r'https*://[a-zA-z_.0-9/]+/* *'
     # # stop_words = set(stopwords.words('english'))
     #
@@ -24,10 +27,14 @@ if __name__ == '__main__':
     # print(test_bow.head())
     #
     # test_bow.to_csv('Data/test/bag_of_words_v0.1.csv')
-    mnb_model = pickle.load(open('models/classifier_model/20200117_mnb_bow_v0.5.pickle', 'rb'))
+    mnb_model = pickle.load(open(os.path.join(config.MODEL_DIR, 'classifier_model/{}_mnb_bow_v{}.pickle'.format(
+        run_config.model_date_to_read, run_config.model_version_to_read)), 'rb'))
 
-    test_bow = pd.read_csv('Data/processed/test/feature_eng/bag_of_words_v0.5.csv')
+    test_bow = pd.read_csv(os.path.join(config.DATA_DIR, 'processed/test/feature_eng/{}_bag_of_words_v{}.csv'.format(
+        run_config.model_date_to_read, run_config.model_version_to_read
+    )))
     y_pred = mnb_model.predict(test_bow)
 
     df_pred = pd.DataFrame(y_pred, index=df_test.id, columns=['label'])
-    df_pred.to_csv('outputs/{}_mnb_bow_v0.5.csv'.format(datetime.datetime.today().strftime('%Y%m%d')))
+    df_pred.to_csv(os.path.join(config.OUTPUTS_DIR, '{}_mnb_bow_v{}.csv'.format(
+        run_config.model_date_to_write, run_config.model_version_to_write)))
