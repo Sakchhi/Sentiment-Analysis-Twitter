@@ -24,6 +24,12 @@ def remove_pattern(input_text, pattern):
 
 def expand_contractions(text, contraction_mapping=contraction_map):
     # TODO: understand it
+    """
+        Credits: DipanjanS
+    :param text:
+    :param contraction_mapping:
+    :return:
+    """
     contractions_pattern = re.compile('({})'.format('|'.join(contraction_mapping.keys())),
                                       flags=re.IGNORECASE | re.DOTALL)
 
@@ -43,6 +49,7 @@ def expand_contractions(text, contraction_mapping=contraction_map):
 
 def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
     text = remove_pattern(text, pattern_dict["html_regex"])
+    text = remove_pattern(text, pattern_dict["twitter_images_regex"])
     text = remove_pattern(text, pattern_dict["user_name_regex"])
     text = remove_pattern(text, '#')
     text = translator(text)
@@ -64,7 +71,8 @@ if __name__ == '__main__':
 
     regex_list = {
         "html_regex": r'https*://[a-zA-z_.0-9/]+/* *',
-        "user_name_regex": r'@[A-Za-z0-9_]+'
+        "user_name_regex": r'@[A-Za-z0-9_]+',
+        "twitter_images_regex": r'pic.twitter.com/[a-zA-Z0-9]+'
     }
     # stop_words = set(stopwords.words('english'))
 
@@ -74,4 +82,4 @@ if __name__ == '__main__':
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_full.to_excel("Data/processed/train/full_cleaned_v0.4.xlsx", index=False)
+    df_full.to_excel("Data/processed/train/preprocess/full_cleaned_v0.5.xlsx", index=False)
