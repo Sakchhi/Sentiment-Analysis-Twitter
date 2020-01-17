@@ -55,8 +55,8 @@ def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
 
 
 if __name__ == '__main__':
-    df_train = pd.read_csv('Data/train/train.csv')
-    df_test = pd.read_csv('Data/test/test.csv')
+    df_train = pd.read_csv('Data/raw/train.csv')
+    df_test = pd.read_csv('Data/raw/test.csv')
     df_full = df_train.append(df_test, ignore_index=True)
     print(df_full.columns, df_full.shape)
     print(df_full.tail())
@@ -74,4 +74,4 @@ if __name__ == '__main__':
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_full.to_excel("Data/train/full_cleaned_v0.4.xlsx", index=False)
+    df_full.to_excel("Data/processed/train/full_cleaned_v0.4.xlsx", index=False)

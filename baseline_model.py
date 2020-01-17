@@ -11,22 +11,31 @@ def get_predictions(train_data, train_labels, test_data):
     mnb_model.fit(train_data, train_labels)
     predictions = mnb_model.predict(test_data)
 
-    pickle.dump(mnb_model, open('models/20200115_mnb_bow_v0.4.pickle', 'wb'))
+    pickle.dump(mnb_model, open('models/20200115_mnb_bow_v0.4.1.pickle', 'wb'))
     return predictions
 
 
 if __name__ == '__main__':
-    df_bow = pd.read_csv('Data/train/bag_of_words_v0.4.csv')
-    df_train = pd.read_csv('Data/train/train.csv')
+    df_bow = pd.read_csv('Data/processed/train/bag_of_words_v0.4.csv')
+    df_train = pd.read_csv('Data/raw/train.csv')
     # X_train, X_val, y_train, y_val = train_test_split(df_bow, df_train.label, test_size=0.2)
+    print(df_bow.shape, df_train.shape)
 
-    negative_label_indices = df_train[df_train.label == 0].index
-    sample_size = sum(df_train.label == 1)
+    df_data = df_bow.copy()
+    df_data['sent_label'] = df_train.iloc[:, 1].values
+    print(df_data.shape, df_data.columns[-5:])
+
+    negative_label_indices = df_data[df_data.label == 0].index
+    sample_size = sum(df_data.label == 1)
     random_indices = np.random.choice(negative_label_indices, sample_size, replace=False)
-    negative_sample = df_bow.loc[random_indices]
-    negative_label_sample = df_train.loc[random_indices]
+    postive_label_indices = df_data[df_data.label == 1].index
 
-    y_pred = get_predictions(df_bow, df_train.label, df_bow)
+    under_sampled_indices = np.concatenate([postive_label_indices, random_indices])
+    df_under_sample = df_data.loc[under_sampled_indices]
+    # print(len(negative_label_indices), sample_size, len(df_under_sample), len(under_sampled_indices))
+
+    y_pred = get_predictions(df_under_sample.iloc[:, :-1], df_under_sample.sent_label, df_bow)
+    print(len(y_pred), len(df_train.label))
 
     accuracy_score = metrics.accuracy_score(df_train.label, y_pred)
     print(accuracy_score)
