@@ -1,5 +1,6 @@
 import pickle
 
+import numpy as np
 import pandas as pd
 from sklearn import metrics
 from sklearn.naive_bayes import MultinomialNB
@@ -18,6 +19,12 @@ if __name__ == '__main__':
     df_bow = pd.read_csv('Data/train/bag_of_words_v0.4.csv')
     df_train = pd.read_csv('Data/train/train.csv')
     # X_train, X_val, y_train, y_val = train_test_split(df_bow, df_train.label, test_size=0.2)
+
+    negative_label_indices = df_train[df_train.label == 0].index
+    sample_size = sum(df_train.label == 1)
+    random_indices = np.random.choice(negative_label_indices, sample_size, replace=False)
+    negative_sample = df_bow.loc[random_indices]
+    negative_label_sample = df_train.loc[random_indices]
 
     y_pred = get_predictions(df_bow, df_train.label, df_bow)
 

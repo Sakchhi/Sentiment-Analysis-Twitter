@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     count_vec_model, df_bow = get_bow(df_raw.cleaned_tweet.tolist())
     print(df_bow.head())
-    pickle.dump(count_vec_model, open("models/bag_of_words_v0.4.pickle", 'wb'))
+    pickle.dump(count_vec_model, open("models/bag_of_words_v0.3.pickle", 'wb'))
     # TODO JOBLIB vs PICKLE
     df_bow_train = df_bow.loc[:(train_length - 1)]
     df_bow_test = df_bow.loc[train_length:]

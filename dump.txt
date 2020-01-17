@@ -1,1 +1,6 @@
 slang: :-D=Laughter
+
+
+BOW_LENGTH:
+    v0.3 -- 19669
+    v0.4 -- 19574
