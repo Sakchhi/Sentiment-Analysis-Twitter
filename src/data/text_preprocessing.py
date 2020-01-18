@@ -5,6 +5,7 @@ import re
 
 import pandas as pd
 from expand_sms_slang import translator
+from lemmatize import lemmatize_df
 
 import config
 import run_config
@@ -85,5 +86,8 @@ if __name__ == '__main__':
     # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
+    df_lem = lemmatize_df(df_full)
+    for i in range(10):
+        print(df_train.iloc[i].lem_tweet, end='\n\n')
+    df_lem.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
         run_config.model_date_to_write, run_config.model_version_to_write)), index=False)
