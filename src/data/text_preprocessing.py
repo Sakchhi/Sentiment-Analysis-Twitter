@@ -5,7 +5,6 @@ import re
 
 import pandas as pd
 from expand_sms_slang import translator
-from lemmatize import lemmatize_df
 
 import config
 import run_config
@@ -51,11 +50,30 @@ def expand_contractions(text, contraction_mapping=contraction_map):
     return expanded_text
 
 
+def split_hashtage(hashtagestring):
+    fo = re.compile(r'[A-Z]{2,}(?![a-z])|[A-Z][a-z]+')
+    fi = fo.findall(hashtagestring)
+    result = ''
+    for var in fi:
+        result += var + ' '
+    return result
+
+
+def camel_case_split(str):
+    return re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', str)
+
+
 def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
+    swear_regex = r'$&@*#'
+    text = text.replace('$&@*#', 'shit')
     text = remove_pattern(text, pattern_dict["html_regex"])
     text = remove_pattern(text, pattern_dict["twitter_images_regex"])
     text = remove_pattern(text, pattern_dict["user_name_regex"])
-    text = remove_pattern(text, '#')
+    text = text.replace("#", "")
+    split_regex = r'[A-Z]?[a-z]+[A-Z][a-z]*'
+    pattern = re.compile(split_regex)
+    text = ' '.join([r if not pattern.match(r) else ' '.join(camel_case_split(r))
+                     for r in text.split()])
     text = translator(text)
     text = ''.join(''.join(s)[:2] for _, s in itertools.groupby(text))
     text = expand_contractions(text)
@@ -69,9 +87,10 @@ if __name__ == '__main__':
     df_train = pd.read_csv(os.path.join(config.DATA_DIR, 'raw/train.csv'))
     df_test = pd.read_csv(os.path.join(config.DATA_DIR, 'raw/test.csv'))
     df_full = df_train.append(df_test, ignore_index=True)
+    # df_full = df_train.copy()
     print(df_full.shape)
-    print(df_full.tail())
-    print(df_train.label.value_counts())
+    # print(df_full.tail())
+    # print(df_train.label.value_counts())
 
     regex_list = {
         "html_regex": r'https*://[a-zA-z_.0-9/]+/* *',
@@ -83,11 +102,11 @@ if __name__ == '__main__':
     df_full['cleaned_tweet'] = df_full.tweet.apply(lambda r: cleaning_text(r, regex_list))
     # TODO split words in hashtags
     # TODO parse emoticons
-    # print(re.sub(r'[^\w\s]', '', df_train.iloc[i].cleaned_tweet), end='\n\n')
+
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_lem = lemmatize_df(df_full)
-    for i in range(10):
-        print(df_train.iloc[i].lem_tweet, end='\n\n')
-    df_lem.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
+    # df_lem = lemmatize_df(df_full)
+    # for i in range(10):
+    #     print(df_train.cleaned_tweet.iloc[i], end='\n\n')
+    df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
         run_config.model_date_to_write, run_config.model_version_to_write)), index=False)
