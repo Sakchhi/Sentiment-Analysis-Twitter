@@ -50,15 +50,6 @@ def expand_contractions(text, contraction_mapping=contraction_map):
     return expanded_text
 
 
-def split_hashtage(hashtagestring):
-    fo = re.compile(r'[A-Z]{2,}(?![a-z])|[A-Z][a-z]+')
-    fi = fo.findall(hashtagestring)
-    result = ''
-    for var in fi:
-        result += var + ' '
-    return result
-
-
 def camel_case_split(str):
     return re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', str)
 
