@@ -14,6 +14,10 @@ def get_bow(data):
     bag_of_words = count.transform(data)
     bow_df = pd.DataFrame(bag_of_words.toarray(), columns=count.get_feature_names())
     print(count.get_feature_names())
+    with open(os.path.join(config.ROOT_DIR, 'logs/{}_bow_list_v{}.txt'.format(
+            run_config.model_date_to_write, run_config.model_version_to_write)), 'w') as f:
+        for i in count.get_feature_names():
+            f.write('%s,' % i)
     return count, bow_df
 
 

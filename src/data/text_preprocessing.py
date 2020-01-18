@@ -5,6 +5,7 @@ import re
 
 import pandas as pd
 from expand_sms_slang import translator
+from lemmatize import lemmatize_df
 
 import config
 import run_config
@@ -84,7 +85,7 @@ if __name__ == '__main__':
     # print(df_train.label.value_counts())
 
     regex_list = {
-        "html_regex": r'https*://[a-zA-z_.0-9/]+/* *',
+        "html_regex": r'https*://[a-zA-z_.0-9-_/]+/* *',
         "user_name_regex": r'@[A-Za-z0-9_]+',
         "twitter_images_regex": r'pic.twitter.com/[a-zA-Z0-9]+'
     }
@@ -96,7 +97,7 @@ if __name__ == '__main__':
 
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    # df_lem = lemmatize_df(df_full)
+    df_lem = lemmatize_df(df_full)
     # for i in range(10):
     #     print(df_train.cleaned_tweet.iloc[i], end='\n\n')
     df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
