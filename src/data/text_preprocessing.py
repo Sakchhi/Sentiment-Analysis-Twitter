@@ -58,9 +58,9 @@ def camel_case_split(str):
 def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
     swear_regex = r'$&@*#'
     text = text.replace('$&@*#', 'shit')
-    text = remove_pattern(text, pattern_dict["html_regex"])
-    text = remove_pattern(text, pattern_dict["twitter_images_regex"])
-    text = remove_pattern(text, pattern_dict["user_name_regex"])
+    text = re.sub(pattern_dict["html_regex"], '', text)
+    text = re.sub(pattern_dict["twitter_images_regex"], '', text)
+    text = re.sub(pattern_dict["user_name_regex"], '', text)
     text = text.replace("#", "")
     split_regex = r'[A-Z]?[a-z]+[A-Z][a-z]*'
     pattern = re.compile(split_regex)
@@ -71,7 +71,8 @@ def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
     text = expand_contractions(text)
     text = re.sub(r'[^a-zA-Z ]+', '', text)
     text = text.lower()
-    text = ' '.join([w for w in text.split() if w not in stopwords_list])
+    text = ' '.join([w for w in text.split() if (w not in stopwords_list)
+                     and (len(w) < 10)])
     return text
 
 
@@ -85,7 +86,7 @@ if __name__ == '__main__':
     # print(df_train.label.value_counts())
 
     regex_list = {
-        "html_regex": r'https*://[a-zA-z_.0-9-_/]+/* *',
+        "html_regex": r'https*://[a-zA-z_.0-9-_/=&?]+/* *',
         "user_name_regex": r'@[A-Za-z0-9_]+',
         "twitter_images_regex": r'pic.twitter.com/[a-zA-Z0-9]+'
     }

@@ -1,6 +1,9 @@
 slang: :-D=Laughter
 
 
+https://www.instagram.com/p/BlNyDyYn6RH/?utm_source=ig_twitter_share&igshid=aby8xrg10o0a
+httpswwinstagramcompblnydyynrhutmsourceigtwittershareigshidabyxrgoa
+
 BOW_LENGTH:
     v0.3 -- 19669
     v0.4 -- 19574
@@ -8,3 +11,5 @@ BOW_LENGTH:
     v0.6 -- 17134
     v0.7 -- 16620
     v0.7.2 -- 16141
+    v0.7.4 -- 16178
+    v0.7.5 -- 15928

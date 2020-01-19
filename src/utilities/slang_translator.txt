@@ -1,4 +1,8 @@
 AFAIK=As Far As I Know
+AAPL=Apple
+MSFT=Microsoft
+FB=Facebook
+POTD=Pic Of The Day
 AFK=Away From Keyboard
 ASAP=As Soon As Possible
 ATK=At The Keyboard
