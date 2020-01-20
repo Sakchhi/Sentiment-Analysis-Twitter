@@ -6,7 +6,7 @@ import re
 import pandas as pd
 import wordninja
 from expand_sms_slang import translator
-from lemmatize import lemmatize_df
+from stemmer import stem_df
 
 import config
 import run_config
@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_lem = lemmatize_df(df_full)
+    df_lem = stem_df(df_full)
     # for i in range(10):
     #     print(df_full.lem_tweet.iloc[i], end='\n\n')
     df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(

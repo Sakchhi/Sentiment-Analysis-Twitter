@@ -27,8 +27,9 @@ if __name__ == '__main__':
     # print(test_bow.head())
     #
     # test_bow.to_csv('Data/test/bag_of_words_v0.1.csv')
-    mnb_model = pickle.load(open(os.path.join(config.MODEL_DIR, 'classifier_model/{}_mnb_bow_v{}.pickle'.format(
-        run_config.model_date_to_read, run_config.model_version_to_read)), 'rb'))
+    MODEL_NAME = 'mnb'
+    mnb_model = pickle.load(open(os.path.join(config.MODEL_DIR, 'classifier_model/{}_{}_bow_v{}.pickle'.format(
+        run_config.model_date_to_read, MODEL_NAME, run_config.model_version_to_read)), 'rb'))
 
     test_bow = pd.read_csv(os.path.join(config.DATA_DIR, 'processed/test/feature_eng/{}_bag_of_words_v{}.csv'.format(
         run_config.model_date_to_read, run_config.model_version_to_read
@@ -36,5 +37,5 @@ if __name__ == '__main__':
     y_pred = mnb_model.predict(test_bow)
 
     df_pred = pd.DataFrame(y_pred, index=df_test.id, columns=['label'])
-    df_pred.to_csv(os.path.join(config.OUTPUTS_DIR, '{}_logreg_bow_v{}.csv'.format(
-        run_config.model_date_to_write, run_config.model_version_to_write)))
+    df_pred.to_csv(os.path.join(config.OUTPUTS_DIR, '{}_{}_bow_v{}.csv'.format(
+        run_config.model_date_to_write, MODEL_NAME, run_config.model_version_to_write)))
