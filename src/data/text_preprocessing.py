@@ -4,10 +4,12 @@ import os
 import re
 
 import pandas as pd
-import splitter
+import wordninja
 from expand_sms_slang import translator
+from lemmatize import lemmatize_df
 
 import config
+import run_config
 
 with open(os.path.join(config.UTILITIES_DIR, 'contraction_map.json')) as f:
     contraction_map = json.load(f)
@@ -72,7 +74,7 @@ def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
     text = text.lower()
     text = ' '.join([w for w in text.split() if (w not in stopwords_list)
                      ])
-    text = [splitter.split(word) if splitter.split(word) > 0 else word for word in text]
+    text = ' '.join([' '.join(wordninja.split(word)) for word in text.split()])
     return text
 
 
@@ -98,8 +100,8 @@ if __name__ == '__main__':
 
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    # df_lem = lemmatize_df(df_full)
-    for i in range(10):
-        print(df_full.cleaned_tweet.iloc[i], end='\n\n')
-    # df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
-    #     run_config.model_date_to_write, run_config.model_version_to_write)), index=False)
+    df_lem = lemmatize_df(df_full)
+    # for i in range(10):
+    #     print(df_full.lem_tweet.iloc[i], end='\n\n')
+    df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
+        run_config.model_date_to_write, run_config.model_version_to_write)), index=False)
