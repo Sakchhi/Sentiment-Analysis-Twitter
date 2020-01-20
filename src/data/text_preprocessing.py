@@ -5,7 +5,6 @@ import re
 
 import pandas as pd
 from expand_sms_slang import translator
-from lemmatize import lemmatize_df
 
 import config
 import run_config
@@ -72,7 +71,7 @@ def cleaning_text(text, pattern_dict, stopwords_list=stop_words):
     text = re.sub(r'[^a-zA-Z ]+', '', text)
     text = text.lower()
     text = ' '.join([w for w in text.split() if (w not in stopwords_list)
-                     and (len(w) < 10)])
+                     ])
     return text
 
 
@@ -98,7 +97,8 @@ if __name__ == '__main__':
 
     # for i in range(10):
     #     print(df_train.iloc[i].cleaned_tweet, end='\n\n')
-    df_lem = lemmatize_df(df_full)
+    # df_lem = lemmatize_df(df_full)
+    df_lem = df_full
     # for i in range(10):
     #     print(df_train.cleaned_tweet.iloc[i], end='\n\n')
     df_full.to_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
