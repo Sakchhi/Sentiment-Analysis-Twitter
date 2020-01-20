@@ -25,10 +25,10 @@ if __name__ == '__main__':
     df_raw = pd.read_excel(os.path.join(config.DATA_DIR, "processed/train/preprocess/{}_full_cleaned_v{}.xlsx".format(
         run_config.model_date_to_read, run_config.model_version_to_read)))
     train_length = df_raw[~df_raw.label.isnull()].shape[0]
-    df_raw.cleaned_tweet.fillna('', inplace=True)
+    df_raw.lem_tweet.fillna('', inplace=True)
     print(df_raw.columns, train_length)
 
-    count_vec_model, df_bow = get_bow(df_raw.cleaned_tweet.tolist())
+    count_vec_model, df_bow = get_bow(df_raw.lem_tweet.tolist())
     print(df_bow.head())
     pickle.dump(count_vec_model, open(os.path.join(config.MODEL_DIR,
                                                    "feature_eng_model/{}_bag_of_words_v{}.pickle".format(
