@@ -51,8 +51,25 @@ if __name__ == '__main__':
 
     cm = metrics.confusion_matrix(df_train.label, y_pred)
     tp, fn, fp, tn = cm[0][0], cm[0][1], cm[1][0], cm[1][1]
-    print("FPR = {}".format(fp / (fp + tn)))
+    fpr = fp / (fp + tn)
+    print("FPR = {}".format(fpr))
     print("TPR = {}".format(tp / (tp + fn)))
 
     f1 = metrics.f1_score(df_train.label, y_pred)
     print("F1 Score = {}".format(f1))
+
+    columns = ['Run', 'Accuracy', 'FPR', 'F1 Score', 'Preprocessing', 'Feature', 'Model', 'Notes']
+    preprocessing_notes = "Snowball Stemmer, wordninja"
+    feature_notes = "BoW 2-gram -- Max features 5k"
+    model_notes = "MNB"
+    misc_notes = ""
+    fields = [run_config.model_version_to_write, accuracy_score, fpr, f1,
+              preprocessing_notes, feature_notes, model_notes, misc_notes]
+    with open(os.path.join(config.LOGS_DIR, r'results_summary.csv'), 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(fields)
+
+    df_predictions = pd.DataFrame({"Predictions": y_pred, "Labels": y_val}, index=df_raw.loc[X_val.index]['review_id'])
+    df_predictions.to_excel(os.path.join(config.OUTPUTS_DIR,
+                                         '{}_MNB_Ngram_v{}.xlsx'.format(run_config.model_date_to_write,
+                                                                        run_config.model_version_to_write)))

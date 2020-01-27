@@ -1,19 +1,21 @@
-import spacy
+# import spacy
+from nltk.stem import WordNetLemmatizer
 
 # import stanfordnlp
 # import os
 # os.environ["CORENLP_HOME"] = r'~\stanfordnlp_resources'
 
-nlp = spacy.load('en')
+# nlp = spacy.load('en')
+lemmatizer = WordNetLemmatizer()
 
 
 # nlp = stanfordnlp.Pipeline(processors='tokenize,mwt,pos,lemma')
 
 
 def spacy_lem(row):
-    doc = nlp(row)
+    # doc = nlp(row)
     # return [word.lemma for sent in doc.sentences for word in sent.words]
-    return ' '.join([token.lemma_ for token in doc])
+    return ''.join([lemmatizer.lemmatize(token) for token in row])
 
 
 def lemmatize_df(df):
