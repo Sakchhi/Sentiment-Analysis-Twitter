@@ -1,3 +1,4 @@
+import csv
 import os
 
 import pandas as pd
@@ -7,6 +8,7 @@ from keras.layers.embeddings import Embedding
 from keras.models import Sequential
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
+from sklearn import metrics
 
 import config
 import run_config
@@ -63,8 +65,34 @@ model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
 print(model.summary())
 history = model.fit(X_train, y_train, batch_size=128, epochs=6, verbose=1, validation_split=0.2)
 predictions = model.predict(X_test)
+val_predict = model.predict(X_train)
+val_predict = [1 if i > 0.5 else 0 for i in val_predict]
+
+accuracy_score = metrics.accuracy_score(y_train, val_predict)
+print(accuracy_score)
+
+cm = metrics.confusion_matrix(y_train, val_predict)
+tp, fn, fp, tn = cm[0][0], cm[0][1], cm[1][0], cm[1][1]
+fpr = fp / (fp + tn)
+print("FPR = {}".format(fpr))
+print("TPR = {}".format(tp / (tp + fn)))
+
+f1 = metrics.f1_score(y_train, val_predict)
+print("F1 Score = {}".format(f1))
+
 preds = [1 if i > 0.5 else 0 for i in predictions]
 df_pred = pd.DataFrame(preds, index=df_raw[df_raw.label.isnull()].id, columns=['label'])
 print(df_pred.head())
 df_pred.to_csv(df_pred.to_csv(os.path.join(config.OUTPUTS_DIR, '{}_{}_v{}.csv'.format(
     run_config.model_date_to_write, "lstm_glove100d", run_config.model_version_to_write))))
+
+columns = ['Run', 'Accuracy', 'FPR', 'F1 Score', 'Preprocessing', 'Feature', 'Model', 'Notes']
+preprocessing_notes = "Keras Tokenizer in cleaned"
+feature_notes = ""
+model_notes = "Keras LSTM with glove100d"
+misc_notes = ""
+fields = [run_config.model_version_to_write, accuracy_score, fpr, f1,
+          preprocessing_notes, feature_notes, model_notes, misc_notes]
+with open(os.path.join(config.LOGS_DIR, r'results_summary.csv'), 'a', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(fields)
